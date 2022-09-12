@@ -36,7 +36,7 @@ import Control.Concurrent.Async
 
 data Country
     = Country
-    { country_id :: String
+    { country_id  :: String
     , probability :: Double
     }
     deriving (Show, Generic)
