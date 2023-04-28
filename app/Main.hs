@@ -14,7 +14,6 @@ import Network.HTTP.Simple -- http-conduit
 
 import GHC.Generics
 
-import Data.Maybe
 import Data.Text       qualified as Text
 import Data.Scientific qualified as Scientific
 
@@ -117,9 +116,9 @@ getPerson name = do
     let mPerson = decode body -- :: Maybe Person
     liftIO . putStrLn $ "getPerson :: " ++
         case mPerson of
-            Just (Person n {- g p {- a -} -} c) ->
-                fromJust n ++ " = " {- ++ {- show a ++ " = " ++ -} g ++ " = " ++ show p -}
-                ++ show (fromJust c)
+            Just (Person (Just n) {- g p {- a -} -} (Just c)) ->
+                n ++ " = " {- ++ {- show a ++ " = " ++ -} g ++ " = " ++ show p -}
+                ++ show c
             _ -> "response = " ++ show response
     return mPerson
 
