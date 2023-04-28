@@ -185,9 +185,7 @@ getUserFromAPI n = do if n `Prelude.elem` [1..10]
 main :: IO ()
 main = do
     lsMaybeUser <- forConcurrently [1..10] $ decodeUserJson . getUserFromAPI
-    forM_ lsMaybeUser (\ maybeUser ->
-        do
-            print $ fromJust maybeUser
-            Prelude.putStrLn ""
-        )
+    forM_ lsMaybeUser $ \maybeUser -> do
+        print $ fromJust maybeUser
+        Prelude.putStrLn ""
     where decodeUserJson = (<$>) $ decode @User
