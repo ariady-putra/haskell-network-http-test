@@ -1,4 +1,7 @@
-{-# LANGUAGE DeriveGeneric, OverloadedStrings, TemplateHaskell #-}
+{-# LANGUAGE DeriveGeneric       #-}
+{-# LANGUAGE ImportQualifiedPost #-}
+{-# LANGUAGE OverloadedStrings   #-}
+{-# LANGUAGE TemplateHaskell     #-}
 
 module Main where
 
@@ -11,19 +14,20 @@ import Network.HTTP.Simple -- http-conduit
 
 import GHC.Generics
 
-import qualified Data.Text as Text
-import qualified Data.Scientific as Scientific
+import Data.Maybe
+import Data.Text       qualified as Text
+import Data.Scientific qualified as Scientific
 
 -- unordered-containers
 -- import qualified Data.HashMap.Strict as SHM
 
 -- bytestring
-import qualified Data.ByteString.Lazy.Char8 as L8
--- import qualified Data.ByteString.Char8 as B8
+import Data.ByteString.Lazy.Char8 qualified as L8
+-- import Data.ByteString.Char8 qualified as B8
 
 import Data.Aeson -- aeson
 -- import Data.Aeson.Types
-import qualified Data.Aeson.KeyMap as KMA
+import Data.Aeson.KeyMap qualified as KMA
 
 {- forM
 import Control.Monad
@@ -36,19 +40,19 @@ import Control.Concurrent.Async
 
 data Country
     = Country
-    { country_id  :: String
-    , probability :: Double
+    { country_id  :: Maybe String
+    , probability :: Maybe Double
     }
     deriving (Show, Generic)
 instance FromJSON Country
 
 data Person
     = Person
-    { name        :: String
+    { name        :: Maybe String
     -- , gender      :: String
     -- , probability :: Float
     -- , age         :: Int
-    , country     :: [Country]
+    , country     :: Maybe [Country]
     -- , count       :: Int
     }
     deriving (Show, Generic)
@@ -114,8 +118,8 @@ getPerson name = do
     liftIO . putStrLn $ "getPerson :: " ++
         case mPerson of
             Just (Person n {- g p {- a -} -} c) ->
-                n ++ " = " {- ++ {- show a ++ " = " ++ -} g ++ " = " ++ show p -}
-                ++ show c
+                fromJust n ++ " = " {- ++ {- show a ++ " = " ++ -} g ++ " = " ++ show p -}
+                ++ show (fromJust c)
             _ -> "response = " ++ show response
     return mPerson
 
@@ -137,8 +141,8 @@ main = do
     -- lName <- replicateConcurrently 5 $ return names
     -- let allNames = fName ++ concat lName
     mPersons <- mapConcurrently getPerson
-        (replicate 125 name ++ concat
-        (replicate 125 names)
+        (replicate 10 name ++ concat
+        (replicate 10 names)
         )
     -- lmPerson <- forM (name:names) getPerson
     case sequenceA mPersons of
