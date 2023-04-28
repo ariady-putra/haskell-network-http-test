@@ -184,8 +184,10 @@ getUserFromAPI n = do if n `Prelude.elem` [1..10]
 
 main :: IO ()
 main = do
-    lsMaybeUser <- forConcurrently [1..10] $ decodeUserJson . getUserFromAPI
-    forM_ lsMaybeUser $ \maybeUser -> do
+    lsMaybeUser <- for_1_10 $ decodeUser . getUserFromAPI
+    forM_ lsMaybeUser $ \maybeUser -> do     -- Control.Monad
         print $ fromJust maybeUser
         Prelude.putStrLn ""
-    where decodeUserJson = (<$>) $ decode @User
+    where
+        for_1_10   = forConcurrently [1..10] -- async (Control.Concurrent.Async)
+        decodeUser = (<$>) $ decode @User    -- aeson
