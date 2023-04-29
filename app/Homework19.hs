@@ -108,7 +108,7 @@ instance FromJSON Geo
 data Address
     = Address
     { street  :: Maybe String
-    , suit    :: Maybe String
+    , suite   :: Maybe String
     , city    :: Maybe String
     , zipcode :: Maybe String
     , geo     :: Maybe Geo
